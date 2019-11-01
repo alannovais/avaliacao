@@ -1,0 +1,62 @@
+1)
+CREATE DATABASE polivalencia;
+
+CREATE TABLE Funcionario (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    data_nascimento DATETIME,
+    data_habilitacao DATETIME NOT NULL,
+    cidade VARCHAR(100),
+    telefone VARCHAR(20),
+);
+
+CREATE TABLE Posto(
+    id int identity(1,1) PRIMARY KEY,
+    setor varchar(100) NOT NULL,
+    nome varchar(100) NOT NULL,
+    tipo varchar(100)
+);
+
+CREATE TABLE Func_Posto(
+    func_id INT NOT NULL FOREIGN KEY REFERENCES Funcionario(id),
+    posto_id INT NOT NULL  FOREIGN KEY REFERENCES Posto(id)  
+);
+
+INSERT INTO Funcionario VALUES ('Laura Ribeiro', 07/12/1993, 04/12/2019, 'Salvador', '3333-3333');
+INSERT INTO Funcionario VALUES ('Paulo Bispo', 01/05/1984, 20/10/2019, 'L. de Freitas', '1111-1111');
+INSERT INTO Funcionario VALUES ('Suelen Pereira', 07/12/1993, 01/11/2019, 'Candeias', '2222-2222');
+INSERT INTO Funcionario VALUES ('Adriano Augusto', 07/12/1993, 01/02/2020, 'Camaçari', '4444-4444');
+
+INSERT INTO Posto VALUES ('Fortaleza', 'Recursos Humanos', 'Administrativo');
+INSERT INTO Posto VALUES ('Rio Grande do Norte', 'Desenvolvimento', 'Administrativo');
+INSERT INTO Posto VALUES ('Salvador', 'Segurança', 'Segurança');
+INSERT INTO Posto VALUES ('São Paulo', 'Saúde', 'Saúde');
+
+
+INSERT INTO Posto (1, 2)
+INSERT INTO Posto (2, 1)
+INSERT INTO Posto (2, 4)
+INSERT INTO Posto (3, 3)
+
+_________________________________________________________________________
+2)
+SELECT
+   f.nome
+FROM Funcionario f
+INNER JOIN Func_Posto fp ON fp.func_id = f.id
+INNER JOIN Posto p ON p.id = fp.posto_id
+WHERE (DATEDIFF(m, data_habilitacao, GETDATE() > 1) AND p.setor = 'São Paulo'
+
+__________________________________________________________________________
+1) SQL
+INSERT INTO Marca VALUES (1, 'Nestle', 'Brasil', 'Derivados do Leite');
+INSERT INTO Produtos VALUES (1, 'Moça', '90g', 1);
+
+2) SQL
+SELECT prod.Id, prod.Nome FROM Produtos prod
+INNER JOIN Marca m on m.Id = prod.IdMarca
+WHERE m.Nome = 'Valfenda'
+
+__________________________________________________________________________
+1) NoSql
+Banco NoSql é um banco de dados 
