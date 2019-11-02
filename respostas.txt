@@ -1,12 +1,16 @@
-1)
+1) PHP + SQL SERVER
+
 CREATE DATABASE polivalencia;
+
+USE polivalencia
+GO
+EXEC sp_configure 'default language', 27
+RECONFIGURE
 
 CREATE TABLE Funcionario (
     id INT IDENTITY(1,1) PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     data_nascimento DATETIME,
-    data_habilitacao DATETIME NOT NULL,
-    cidade VARCHAR(100),
     telefone VARCHAR(20),
 );
 
@@ -17,46 +21,94 @@ CREATE TABLE Posto(
     tipo varchar(100)
 );
 
-CREATE TABLE Func_Posto(
-    func_id INT NOT NULL FOREIGN KEY REFERENCES Funcionario(id),
-    posto_id INT NOT NULL  FOREIGN KEY REFERENCES Posto(id)  
+CREATE TABLE Funcionario_Posto (
+    funcionario_id INT NOT NULL,
+    posto_id INT NOT NULL,
+    CONSTRAINT PK_FUNCxPOSTO PRIMARY KEY (funcionario_id, posto_id),
+    CONSTRAINT FK_FUNC FOREIGN KEY (funcionario_id) REFERENCES Funcionario(id),
+    CONSTRAINT FK_POSTO FOREIGN KEY (posto_id) REFERENCES Posto(id)
 );
 
-INSERT INTO Funcionario VALUES ('Laura Ribeiro', 07/12/1993, 04/12/2019, 'Salvador', '3333-3333');
-INSERT INTO Funcionario VALUES ('Paulo Bispo', 01/05/1984, 20/10/2019, 'L. de Freitas', '1111-1111');
-INSERT INTO Funcionario VALUES ('Suelen Pereira', 07/12/1993, 01/11/2019, 'Candeias', '2222-2222');
-INSERT INTO Funcionario VALUES ('Adriano Augusto', 07/12/1993, 01/02/2020, 'Camaçari', '4444-4444');
+INSERT INTO Funcionario VALUES ('Laura Ribeiro', CAST('07/12/1995' AS DATETIME), '3333-3333');
+INSERT INTO Funcionario VALUES ('Paulo Bispo', CAST('01/05/1984' AS DATETIME), '1111-1111');
+INSERT INTO Funcionario VALUES ('Suelen Pereira', CAST('23/06/1989' AS DATETIME), '2222-2222');
+INSERT INTO Funcionario VALUES ('Adriano Augusto', CAST('04/01/1981' AS DATETIME), '4444-4444');
 
-INSERT INTO Posto VALUES ('Fortaleza', 'Recursos Humanos', 'Administrativo');
-INSERT INTO Posto VALUES ('Rio Grande do Norte', 'Desenvolvimento', 'Administrativo');
-INSERT INTO Posto VALUES ('Salvador', 'Segurança', 'Segurança');
-INSERT INTO Posto VALUES ('São Paulo', 'Saúde', 'Saúde');
+INSERT INTO Posto VALUES ('Recursos Humanos', 'Fortaleza', 'Administrativo');
+INSERT INTO Posto VALUES ('Desenvolvimento', 'L. de Freitas', 'Administrativo');
+INSERT INTO Posto VALUES ('Segurança', 'Salvador', 'Segurança');
+INSERT INTO Posto VALUES ('Saúde', 'São Paulo', 'Saúde');
 
 
-INSERT INTO Posto (1, 2)
-INSERT INTO Posto (2, 1)
-INSERT INTO Posto (2, 4)
-INSERT INTO Posto (3, 3)
+INSERT INTO Funcionario_Posto VALUES (1, 4);
+INSERT INTO Funcionario_Posto VALUES (2, 1);
+INSERT INTO Funcionario_Posto VALUES (2, 2);
+INSERT INTO Funcionario_Posto VALUES (3, 3);
+
+select * from Funcionario
+select * from Funcionario_Posto
+select * from Posto
 
 _________________________________________________________________________
-2)
+
+2) PHP + SQL SERVER
+
+ALTER TABLE Funcionario
+ADD data_habilitacao datetime;
+
+UPDATE Funcionario SET data_habilitacao = CAST('04/12/2019' AS DATETIME) WHERE id = 1;
+UPDATE Funcionario SET data_habilitacao = CAST('20/10/2019' AS DATETIME) WHERE id = 2;
+UPDATE Funcionario SET data_habilitacao = CAST('01/11/2019' AS DATETIME) WHERE id = 3;
+UPDATE Funcionario SET data_habilitacao = CAST('01/02/2020' AS DATETIME) WHERE id = 4;
+
 SELECT
-   f.nome
+   f.nome as 'nome funcionario', p.setor, p.nome as 'local', f.data_habilitacao, DATEDIFF(m, GETDATE(), f.data_habilitacao) AS 'meses restantes'
 FROM Funcionario f
-INNER JOIN Func_Posto fp ON fp.func_id = f.id
-INNER JOIN Posto p ON p.id = fp.posto_id
-WHERE (DATEDIFF(m, data_habilitacao, GETDATE() > 1) AND p.setor = 'São Paulo'
+    INNER JOIN Funcionario_Posto fp ON fp.funcionario_id = f.id
+    INNER JOIN Posto p ON p.id = fp.posto_id
+WHERE (DATEDIFF(m, GETDATE(), f.data_habilitacao) >= 1) AND p.nome = 'São Paulo'
 
 __________________________________________________________________________
+
 1) SQL
+
 INSERT INTO Marca VALUES (1, 'Nestle', 'Brasil', 'Derivados do Leite');
 INSERT INTO Produtos VALUES (1, 'Moça', '90g', 1);
 
 2) SQL
-SELECT prod.Id, prod.Nome FROM Produtos prod
-INNER JOIN Marca m on m.Id = prod.IdMarca
+
+SELECT 
+    prod.Id, prod.Nome 
+FROM Produtos prod
+INNER JOIN 
+    Marca m ON m.Id = prod.IdMarca
 WHERE m.Nome = 'Valfenda'
 
 __________________________________________________________________________
+
 1) NoSql
-Banco NoSql é um banco de dados 
+
+Banco NoSql, é um banco de dados voltado a uma quantidade massiva de dados dos mais diversos tipos, arquivos, dados, imagens e outros,
+comparado a bancos relacionais tem uma escalabilidade relativamente mais simples, porém em integridade da informação pode ser 
+melhor estruturada em bancos relacionais.
+Exemplo de banco NoSql Cassandra.
+
+___________________________________________________________________________
+
+1) Laravel 
+
+ALTER TABLE Posto
+ADD pais varchar(30);
+
+update posto set pais = 'Brasil' where id = 1;
+update posto set pais = 'EUA' where id = 2;
+update posto set pais = 'Canadá' where id = 3;
+update posto set pais = 'Brasil' where id = 4;
+___________________________________________________________________________
+
+2) Public | Private | Protected
+
+Os modificador de acesso Public podem ser usados em outras classes do mesmo pacote, já o modificador Private só poderá 
+ser manipulado por declaração e não permite herança, e o Protected é acessível pela classes que o declara podendo ser 
+utilizado em outras classes do mesmo pacote
+

@@ -12,6 +12,6 @@ class Posto extends Model
     // ];
     public function funcionario()
     {
-        return $this->belongsToMany(Funcionario::class, 'posto_id');
+        return $this->belongsToMany(Funcionario::class);
     }
 }

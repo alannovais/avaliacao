@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Funcionario;
 use App\Posto;
+use Illuminate\Support\Facades\DB;
 
 class FuncionarioController extends Controller
 {
@@ -14,17 +15,19 @@ class FuncionarioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function listFuncionario($request)
+    public function listFuncionario(Request $request)
     {
-        //here call method to search in DB
-        DB::select('
-        SELECT * FROM 
-            Funcionario f
-            INNER JOIN Func_Posto fp on fp.func_id = f.id
-            INNER JOINT Posto p on p.id = fp.posto.id
-             where posto = ?'
-        , $request);
-
-        return response()->json($data);
+        $arrayFunc = [];
+        $data = Posto::where('pais', '=', \json_decode($request->getContent())->local)->with('funcionario')->get();
+        if(sizeof($data) == 0)
+            return response()->json('Não Há Registros');
+            
+        foreach ($data as $key => $value) {
+            foreach($value->funcionario as $key => $value2){
+                array_push($arrayFunc, array('name' => $value2->nome));
+            }
+        }
+        
+        return response()->json($arrayFunc);
     }
 }

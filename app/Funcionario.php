@@ -15,6 +15,6 @@ class Funcionario extends Model
 
     public function posto()
     {
-        return $this->belongsToMany(Posto::class, 'func_id');
+        return $this->belongsToMany(Posto::class);
     }
 }
